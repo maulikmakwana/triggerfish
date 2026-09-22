@@ -20,6 +20,8 @@
     <style>
         html {
             scroll-behavior: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
         body {
@@ -323,9 +325,9 @@
           });
           const navbar = document.querySelector('.navbar');
         
-          window.addEventListener('scroll', () => {
-            navbar.classList.toggle('nav-sticky', window.scrollY > 0);
-          });
+          // window.addEventListener('scroll', () => {
+          //   navbar.classList.toggle('nav-sticky', window.scrollY > 0);
+          // });
     </script>
 </body>
 

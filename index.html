@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <meta charset="utf-8">
     <title>Triggerfish | Animation for Purpose-Driven Organisations</title>
     <meta content="We create high-quality animation for complex programmes and purpose-driven organisations. Communicate your mission with animation that inspires and delivers." name="description"
     />
@@ -194,13 +195,12 @@
             position: absolute;
             top: -45px;
             right: 0;
+            width: 36px;
+            height: 36px;
+            padding: 0;
             background: none;
             border: 0;
-            color: #fff;
-            font-size: 20px;
-            line-height: 1;
             cursor: pointer;
-            padding: 6px;
             opacity: 0;
             transform: scale(0.7);
             transition:
@@ -208,8 +208,21 @@
                 transform 0.35s ease;
         }
 
+        .video-lightbox-close span,
+        .video-lightbox-close span::before {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 24px;
+            height: 2px;
+            background: #fff;
+            content: "";
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
 
-        /* Show close button after popup opens */
+        .video-lightbox-close span::before {
+            transform: translate(-50%, -50%) rotate(90deg);
+        }
 
         .video-lightbox.active .video-lightbox-close {
             opacity: 0.8;
@@ -567,7 +580,9 @@
     </div>
     <div class="video-lightbox" id="videoLightbox">
         <div class="video-lightbox-inner">
-            <button class="video-lightbox-close" id="videoLightboxClose" aria-label="Close">✕</button>
+            <button class="video-lightbox-close" id="videoLightboxClose" aria-label="Close">
+                <span></span>
+            </button>
             <video id="videoLightboxPlayer" controls autoplay playsinline></video>
         </div>
     </div>
@@ -627,9 +642,9 @@
           });
           const navbar = document.querySelector('.navbar');
         
-          window.addEventListener('scroll', () => {
-            navbar.classList.toggle('nav-sticky', window.scrollY > 0);
-          });
+          // window.addEventListener('scroll', () => {
+          //   navbar.classList.toggle('nav-sticky', window.scrollY > 0);
+          // });
 
           /* =========================================================
              VIDEO LIGHTBOX
