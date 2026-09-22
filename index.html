@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Triggerfish | Animation for Purpose-Driven Organisations</title>
+    <meta content="We create high-quality animation for complex programmes and purpose-driven organisations. Communicate your mission with animation that inspires and delivers." name="description"
+    />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <link href="assets/images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="assets/images/webclip.png" rel="apple-touch-icon" />
+    <link rel="stylesheet" href="assets/css/animation-style.css" type="text/css" />
+
+    <style>
+        html,
+        body {
+          margin: 0;
+          padding: 0;
+          overflow-x: hidden;
+          width: 100%;
+          scrollbar-width: none;
+             -ms-overflow-style: none;
+        }     
+
+        .nav-block {
+          transform: translate(120%) rotate(8deg) !important;
+          opacity: 0 !important;
+          visibility: visible !important;
+        }
+        .nav-block.active {
+          transform: translate(0) rotate(0deg) !important;
+          opacity: 1 !important;
+        }
+
+        .nav-block.active .nav-link {
+          opacity: 1;
+          transform: translateX(0);
+        }
+
+        .nav-block.active .nav-link:nth-child(1) { transition-delay: 0.1s; }
+        .nav-block.active .nav-link:nth-child(2) { transition-delay: 0.18s; }
+        .nav-block.active .nav-link:nth-child(3) { transition-delay: 0.26s; }
+        .nav-block.active .nav-link:nth-child(4) { transition-delay: 0.34s; }
+
+        .button-menu.active .menu-text { display: none; }
+        .button-menu.active .menu-close { display: block; }
+        .navbar.nav-sticky .brand-logo { transform: translateY(-250%); }
+
+        /* CLOSE (vertical) */
+        .button-menu.active .dots-inner { transform: rotate(90deg); }
+        .button-menu:hover .dots-inner { transform: rotate(90deg) !important; }
+
+        .navbar.nav-sticky {
+          position: fixed;
+          right: 0;
+          left: 0;
+          top: 0;
+        }
+
+        .w-nav[data-collapse='medium'] .w-nav-button { display: none; }
+
+        .gallery-item:hover .preview-video { opacity: 1; }
+        .gallery-item:hover .thumb { opacity: 0; }
+
+        .preview-video, .thumb { transition: opacity 0.35s ease; }
+
+        .preview-video {
+          padding-top: 0 !important;
+          height: 100% !important;
+        }
+
+        .preview-video video {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+
+        .button-menu .dots-inner { transform: rotate(0deg) !important; }
+        .nav-link { transition: background 0.35s ease; }
+
+        .nav-arrow {
+          width: 10px;
+          overflow: hidden;
+          transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .nav-arrow img {
+          width: 100%;
+          transform: translateX(-18px) scale(0);
+          opacity: 0;
+          transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+        }
+
+        .nav-text { transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+
+        .nav-link.w--current .nav-arrow,
+        .nav-link:hover .nav-arrow {
+          display: flex;
+          width: 35px;
+        }
+
+        @media (max-width: 767px) {
+          .nav-link.w--current .nav-arrow,
+          .nav-link:hover .nav-arrow { width: 18px; }
+        }
+
+        .nav-link.w--current .nav-arrow img,
+        .nav-link:hover .nav-arrow img {
+          transform: translateX(0) scale(1);
+          opacity: 1;
+        }
+
+        .nav-link.w--current .nav-text,
+        .nav-link:hover .nav-text {
+          transform: translateX(6px);
+          color: #000;
+        }
+
+        /* =========================================================
+           VIDEO LIGHTBOX
+           Fade + Popup + Bottom → Top Animation
+           ========================================================= */
+
+        .video-lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 999999;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 5vw;
+            box-sizing: border-box;
+
+            background: rgba(0, 0, 0, 0);
+
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+
+            overflow: hidden;
+
+            transition:
+                opacity 0.45s ease,
+                background 0.45s ease,
+                visibility 0s linear 0.45s;
+        }
+
+        .video-lightbox.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+
+            background: rgba(0, 0, 0, 0.92);
+
+            transition:
+                opacity 0.45s ease,
+                background 0.45s ease,
+                visibility 0s linear 0s;
+        }
+
+        /* Video wrapper */
+        .video-lightbox-inner {
+            position: relative;
+            width: min(960px, 90vw);
+            max-height: 85vh;
+            transform:
+                translateY(100vh)
+                scale(0.82);
+
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+
+        /* Video */
+
+        .video-lightbox-inner video {
+            display: block;
+            width: 100%;
+            height: auto;
+            cursor: pointer;
+            max-height: 85vh;
+            background: #000;
+            object-fit: contain;
+            border-radius: 4px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+        }
+
+
+        /* Close button */
+
+        .video-lightbox-close {
+            position: absolute;
+            top: -45px;
+            right: 0;
+            background: none;
+            border: 0;
+            color: #fff;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 6px;
+            opacity: 0;
+            transform: scale(0.7);
+            transition:
+                opacity 0.35s ease,
+                transform 0.35s ease;
+        }
+
+
+        /* Show close button after popup opens */
+
+        .video-lightbox.active .video-lightbox-close {
+            opacity: 0.8;
+            transform: scale(1);
+            transition-delay: 0.35s;
+        }
+
+        .video-lightbox-close:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+
+        /* =========================================================
+           OPEN ANIMATION
+           ========================================================= */
+
+        .video-lightbox.is-opening .video-lightbox-inner {
+            animation:
+                videoPopupOpen
+                0.9s
+                cubic-bezier(0.22, 1, 0.36, 1)
+                forwards;
+        }
+
+        /* =========================================================
+           CLOSE ANIMATION
+           ========================================================= */
+
+        .video-lightbox.is-closing .video-lightbox-inner {
+            animation:
+                videoPopupClose
+                0.55s
+                cubic-bezier(0.55, 0, 1, 0.45)
+                forwards;
+        }
+
+        /* =========================================================
+           POPUP OPEN
+           Bottom → Top + Scale + Fade
+           ========================================================= */
+
+        @keyframes videoPopupOpen {
+            0% {
+                transform:
+                    translateY(100vh)
+                    scale(0.82);
+
+                opacity: 0;
+            }
+
+            45% {
+                opacity: 1;
+            }
+
+            70% {
+                transform:
+                    translateY(-10px)
+                    scale(1.02);
+
+                opacity: 1;
+            }
+
+            100% {
+                transform:
+                    translateY(0)
+                    scale(1);
+
+                opacity: 1;
+            }
+        }
+
+
+        /* =========================================================
+           POPUP CLOSE
+           Bottom + Scale + Fade
+           ========================================================= */
+
+        @keyframes videoPopupClose {
+            0% {
+                transform:
+                    translateY(0)
+                    scale(1);
+
+                opacity: 1;
+            }
+
+            100% {
+                transform:
+                    translateY(100vh)
+                    scale(0.88);
+
+                opacity: 0;
+            }
+        }
+
+        /* =========================================================
+           REDUCED MOTION
+           ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .video-lightbox,
+            .video-lightbox-inner,
+            .video-lightbox-close {
+                animation: none !important;
+                transition: none !important;
+                transform: none !important;
+            }
+        }
+        /* Simple mouse pointer for gallery */
+
+        .gallery-item {
+            cursor: pointer;
+        }
+
+        .gallery-item .preview-video,
+        .gallery-item .preview-video video {
+            cursor: pointer;
+        }
+
+
+        /* =========================================================
+           HERO BANNER & CENTERED VIDEO FIX
+           ========================================================= */
+
+        .hero-banner {
+          position: relative;
+          width: 100%;
+          padding-bottom: 60px;
+        }
+
+        .hero-banner .container {
+          position: relative;
+        }
+
+        /* Hero Image Container - Properly Centered */
+        .hero-image {
+          position: relative;
+          width: 100vw;
+          height: 100vh;
+          left: 50%;
+          transform: translateX(-50%); /* Centers element accurately relative to viewport */
+          margin-top: 40px;
+          overflow: hidden;
+          box-sizing: border-box;
+        }
+
+        .hero-image .preview-video {
+          width: 100%;
+          height: 100%;
+          padding-top: 0 !important;
+          overflow: hidden;
+        }
+
+        .hero-zoom-wrap {
+          width: 100%;
+          height: 100%;
+          transform: scale(0.4);
+          transform-origin: center center;
+          opacity: 0.2;
+          will-change: transform, opacity;
+        }
+
+        .hero-zoom-wrap video {
+          display: block;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center center;
+        }
+
+        @media (max-width: 767px) {
+          .hero-image {
+            height: 45vh;
+          }
+        }
+
+    </style>
+</head>
+
+<body class="body">
+    <div data-animation="default" class="navbar w-nav" data-easing2="ease" data-wf-component-id="cbcff1cc-8e7b-5aad-f01c-5d6b0a6afb49" data-easing="ease" data-wf-variant-state="base" data-collapse="medium" role="banner" data-duration="400">
+        <div class="container w-container">
+            <div class="navbar-inner">
+                <a href="index.html" aria-current="page" class="brand-logo w-nav-brand w--current"><img loading="lazy" src="assets/images/6a532b9965731c22c3277286_Triggerfish_white_2000px 1.png" alt="" class="brand-logo-image" /></a>
+                <div class="nav-right">
+                    <div class="button-menu">
+                        <div class="menu-text">Menu</div>
+                        <div class="menu-close">Close</div>
+                        <div class="menu-dots">
+                            <div class="dots-inner">
+                                <div class="dot-1"></div>
+                                <div class="dot-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nav-block">
+                        <a href="#" class="nav-link w-inline-block">
+                            <div class="nav-arrow"><img src="assets/images/6a550926103e37d65183fd40_arrow-right.svg" loading="lazy" alt="" class="nav-link-img" /></div>
+                            <div class="nav-text">Work</div>
+                        </a>
+                        <a href="about.html" class="nav-link w-inline-block">
+                            <div class="nav-arrow"><img src="assets/images/6a550926103e37d65183fd40_arrow-right.svg" loading="lazy" alt="" class="nav-link-img-copy" /></div>
+                            <div class="nav-text">About</div>
+                        </a>
+                        <a href="#" class="nav-link w-inline-block">
+                            <div class="nav-arrow"><img src="assets/images/6a550926103e37d65183fd40_arrow-right.svg" loading="lazy" alt="" class="nav-link-img-copy" /></div>
+                            <div class="nav-text">Contact
+                                <br data-wf-component-id="cbcff1cc-8e7b-5aad-f01c-5d6b0a6afb49" data-wf-variant-state="base" />
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-button w-nav-button">
+                <div class="icon w-icon-nav-menu"></div>
+            </div>
+        </div>
+    </div>
+    <div class="hero-banner">
+        <div class="w-layout-blockcontainer container w-container">
+
+            <div class="banner-inner">
+                <div class="banner-text page-load-animation">
+                    We help complex programmes, foundations, and purpose-driven organisations communicate their mission through high-quality animation that informs, inspires, and delivers measurable results.
+                </div>
+            </div>
+
+            <div class="hero-image">
+                <div class="preview-video banner-video w-embed">
+
+                    <div class="hero-zoom-wrap" id="heroZoomWrap">
+
+                        <video
+                            loop
+                            autoplay
+                            muted
+                            playsinline
+                            width="100%"
+                            height="100%"
+                        >
+                            <source
+                                src="https://www.w3schools.com/html/mov_bbb.mp4"
+                                type="video/mp4"
+                            >
+                        </video>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="stories-that-helped">
+        <div class="w-layout-blockcontainer container w-container">
+            <div class="stories-that-helped-inner gallery-stagger">
+                <div class="block-text story-title">Stories we&#x27;ve helped tell</div>
+                <div class="stories-that-helped-desc">
+                    <p class="desc">From public health campaigns and education initiatives to sustainability programmes and social impact reporting, we create animation that helps organisations explain complex topics with clarity and confidence</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="gallery">
+        <div class="w-layout-blockcontainer container w-container">
+            <div class="gallery-inner">
+                <div class="gallery-item gallery-stagger"><img src="assets/images/6a53745875614ee8368b7adc_gallery-1.png" loading="lazy" sizes="(max-width: 560px) 100vw, 560px" srcset="assets/images/6a53745875614ee8368b7adc_gallery-1-p-500.png 500w, assets/images/6a53745875614ee8368b7adc_gallery-1.png 560w"
+                    alt="Woman leaning against a large column outdoors with trees and building in the background." class="thumb" />
+                    <div class="preview-video w-embed">
+                        <video loop autoplay muted width="100%">
+                            <source src="assets/video/file_example_MP4_480_1_5MG.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <a data-video="https://www.w3schools.com/html/mov_bbb.mp4" class="fancybox-vd w-inline-block"></a>
+                </div>
+                <div class="gallery-item gallery-item-2 gallery-stagger"><img src="assets/images/6a5380a51dd7916d7204a6ce_gallery-2.png" loading="lazy" sizes="(max-width: 767px) 100vw, (max-width: 827px) 95vw, 786px" srcset="assets/images/6a5380a51dd7916d7204a6ce_gallery-2-p-500.png 500w, assets/images/6a5380a51dd7916d7204a6ce_gallery-2.png 786w"
+                    alt="Illustration of a man looking closely at a tiny glowing figure projecting from his smartwatch." class="thumb" />
+                    <div class="preview-video w-embed">
+                        <video loop autoplay muted width="100%">
+                            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <a data-video="https://www.w3schools.com/html/mov_bbb.mp4" class="fancybox-vd w-inline-block"></a>
+                </div>
+                <div class="gallery-item gallery-item-2 gallery-stagger"><img src="assets/images/6a5380a5c1d76f4028a362b4_gallery-3.png" loading="lazy" sizes="(max-width: 767px) 100vw, (max-width: 830px) 95vw, 789w" srcset="assets/images/6a5380a5c1d76f4028a362b4_gallery-3-p-500.png 500w, assets/images/6a5380a5c1d76f4028a362b4_gallery-3.png 789w"
+                    alt="Man assembling mechanical birds at a table outdoors surrounded by autumn trees." class="thumb" />
+                    <div class="preview-video w-embed">
+                        <video loop autoplay muted width="100%">
+                            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <a data-video="https://www.w3schools.com/html/mov_bbb.mp4" class="fancybox-vd w-inline-block"></a>
+                </div>
+                <div class="gallery-item gallery-stagger"><img src="assets/images/6a5380a234afa63ae22abc25_gallery-4.png" loading="lazy" sizes="(max-width: 561px) 100vw, 561px" srcset="assets/images/6a5380a234afa63ae22abc25_gallery-4-p-500.png 561w"
+                    alt="Illustration of a woman with dark hair wearing a light blue top, centered on yellow abstract shapes." class="thumb" />
+                    <div class="preview-video w-embed">
+                        <video loop autoplay muted width="100%">
+                            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <a data-video="https://www.w3schools.com/html/mov_bbb.mp4" class="fancybox-vd w-inline-block"></a>
+                </div>
+                <div class="gallery-item gallery-stagger"><img src="assets/images/6a5380a5e08d3e470d225052_gallery-5.png" loading="lazy" sizes="(max-width: 560px) 100vw, 560px" srcset="assets/images/6a5380a5e08d3e470d225052_gallery-5-p-500.png 500w, assets/images/6a5380a5e08d3e470d225052_gallery-5.png 560w"
+                    alt="Cartoon man walking on city street at night pulling a red rolling suitcase with buildings and streetlight." class="thumb" />
+                    <div class="preview-video w-embed">
+                        <video loop autoplay muted width="100%">
+                            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <a data-video="https://www.w3schools.com/html/mov_bbb.mp4" class="fancybox-vd w-inline-block"></a>
+                </div>
+                <div class="gallery-item gallery-item-2 gallery-stagger"><img src="assets/images/6a5380a51dd7916d7204a6ce_gallery-2.png" loading="lazy" sizes="(max-width: 767px) 100vw, (max-width: 827px) 95vw, 786w" srcset="assets/images/6a5380a51dd7916d7204a6ce_gallery-2-p-500.png 500w, assets/images/6a5380a51dd7916d7204a6ce_gallery-2.png 786w"
+                    alt="Illustration of a man watching a glowing hologram of a tiny person projected from his wristwatch." class="thumb" />
+                    <div class="preview-video w-embed">
+                        <video loop autoplay muted width="100%">
+                            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <a data-video="https://www.w3schools.com/html/mov_bbb.mp4" class="fancybox-vd gallery-stagger-2 w-inline-block"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="w-layout-blockcontainer container w-container">
+            <div class="footer-wrap">
+                <div class="footer-top">
+                    <div class="block-text">Have a project in mind?
+                        <br/>We're ready to collaborate.</div><a href="mailto:hello@triggerfish.com" class="mail">hello@triggerfish.com</a></div>
+                <div class="footer-center">
+                    <div class="footer-block">
+                        <div class="block-title">SOUTH AFRICA</div>
+                        <div class="address">The Shed, Dreyersdal Farm Rd, Dreyersdal, Cape Town,</div>
+                    </div>
+                    <div class="footer-block">
+                        <div class="block-title">IRELAND</div>
+                        <div class="address">The Shed, Dreyersdal Farm Rd, Dreyersdal, Cape Town,</div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <div class="footer-bottom-left">
+                        <div class="social-links">
+                            <a href="#" target="_blank" class="social-item w-inline-block"><img loading="lazy" src="assets/images/6a535be2e009ec4087aa6a06_instagram.svg" alt="" class="social-icon" /></a>
+                            <a href="#" target="_blank" class="social-item w-inline-block"><img loading="lazy" src="assets/images/6a535be2647d70bbea1e9c04_facebook.svg" alt="" class="social-icon" /></a>
+                            <a href="#" target="_blank" class="social-item w-inline-block"><img loading="lazy" src="assets/images/6a535be265731c22c32d3285_linkedinn.svg" alt="" class="social-icon" /></a>
+                        </div>
+                        <div class="policy-block"><a href="#" class="policy-link">Privacy Policy</a><a href="#" class="policy-link">Cookie Preferences</a></div>
+                    </div>
+                    <div class="copyright">© 2026 Triggerfish. All Rights Reserved.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="video-lightbox" id="videoLightbox">
+        <div class="video-lightbox-inner">
+            <button class="video-lightbox-close" id="videoLightboxClose" aria-label="Close">✕</button>
+            <video id="videoLightboxPlayer" controls autoplay playsinline></video>
+        </div>
+    </div>
+    <script src="https://unpkg.com/lenis@1.3.8/dist/lenis.min.js"></script>
+    <script>
+        // Smooth scrolling
+        const lenis = new Lenis({
+            duration: 1.2,
+            smoothWheel: true,
+            smoothTouch: false
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+
+        requestAnimationFrame(raf);
+        const menuBtn = document.querySelector('.button-menu');
+          const nav = document.querySelector('.nav-block');
+        
+          function lockScroll() {
+            document.querySelector('.navbar').style.setProperty('overflow', 'visible', 'important'); // .navbar
+          }
+        
+          function unlockScroll() {
+            document.documentElement.style.removeProperty('overflow');
+            document.body.style.removeProperty('overflow');
+          }
+        
+          menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+        
+            const isOpening = !nav.classList.contains('active');
+        
+            if (isOpening) {
+              lockScroll();
+              menuBtn.classList.add('active');
+              nav.classList.add('active');
+            } else {
+              menuBtn.classList.remove('active');
+              nav.classList.remove('active');
+              unlockScroll();
+            }
+          });
+        
+          // Prevent clicks inside menu from closing it
+          nav.addEventListener('click', (e) => {
+            e.stopPropagation();
+          });
+        
+          // Close menu when clicking outside
+          document.addEventListener('click', () => {
+            menuBtn.classList.remove('active');
+            nav.classList.remove('active');
+            unlockScroll();
+          });
+          const navbar = document.querySelector('.navbar');
+        
+          window.addEventListener('scroll', () => {
+            navbar.classList.toggle('nav-sticky', window.scrollY > 0);
+          });
+
+          /* =========================================================
+             VIDEO LIGHTBOX
+             Fade + Popup + Bottom → Top Animation
+             ========================================================= */
+
+          const videoLightbox = document.getElementById('videoLightbox');
+
+          const videoLightboxInner = videoLightbox
+              ? videoLightbox.querySelector('.video-lightbox-inner')
+              : null;
+
+          const videoLightboxPlayer = document.getElementById(
+              'videoLightboxPlayer'
+          );
+
+          const videoLightboxClose = document.getElementById(
+              'videoLightboxClose'
+          );
+
+          let lightboxAnimating = false;
+
+          /* =========================================================
+             OPEN LIGHTBOX
+             ========================================================= */
+
+          function openVideoLightbox(src) {
+
+              if (
+                  !videoLightbox ||
+                  !videoLightboxInner ||
+                  !videoLightboxPlayer ||
+                  !src ||
+                  lightboxAnimating
+              ) {
+                  return;
+              }
+
+              lightboxAnimating = true;
+
+              /* Set video */
+
+              videoLightboxPlayer.src = src;
+
+              /* Reset animation classes */
+
+              videoLightbox.classList.remove('is-closing');
+              videoLightbox.classList.remove('is-opening');
+
+              /* Show overlay */
+
+              videoLightbox.classList.add('active');
+
+
+              /* Reset starting position */
+
+              videoLightboxInner.style.transform =
+                  'translateY(100vh) scale(0.82)';
+
+              videoLightboxInner.style.opacity = '0';
+
+
+              /* Prevent background scrolling */
+
+              document.documentElement.style.setProperty(
+                  'overflow',
+                  'hidden',
+                  'important'
+              );
+
+              document.body.style.setProperty(
+                  'overflow',
+                  'hidden',
+                  'important'
+              );
+
+              /* Force browser reflow */
+              videoLightboxInner.offsetHeight;
+
+              /* Start animation */
+              videoLightbox.classList.add('is-opening');
+
+              /* Play video */
+              videoLightboxPlayer.play().catch(function () {});
+
+
+              /* Animation finished */
+              setTimeout(function () {
+                  lightboxAnimating = false;
+
+              }, 900);
+          }
+
+
+          /* =========================================================
+             CLOSE LIGHTBOX
+             ========================================================= */
+
+          function closeVideoLightbox() {
+
+              if (
+                  !videoLightbox ||
+                  !videoLightboxInner ||
+                  !videoLightboxPlayer ||
+                  lightboxAnimating
+              ) {
+                  return;
+              }
+
+              lightboxAnimating = true;
+
+
+              /* Remove opening animation */
+              videoLightbox.classList.remove('is-opening');
+
+
+              /* Start closing animation */
+              videoLightbox.classList.add('is-closing');
+
+
+              setTimeout(function () {
+                  /* Hide lightbox */
+
+                  videoLightbox.classList.remove('active');
+                  videoLightbox.classList.remove('is-closing');
+
+                  /* Stop video */
+                  videoLightboxPlayer.pause();
+                  videoLightboxPlayer.removeAttribute('src');
+                  videoLightboxPlayer.load();
+
+                  /* Reset inline styles */
+                  videoLightboxInner.style.transform = '';
+                  videoLightboxInner.style.opacity = '';
+
+
+                  /* Restore scrolling */
+                  document.documentElement.style.removeProperty(
+                      'overflow'
+                  );
+
+                  document.body.style.removeProperty(
+                      'overflow'
+                  );
+
+                  lightboxAnimating = false;
+
+              }, 550);
+          }
+
+
+          /* =========================================================
+             VIDEO TRIGGERS
+             ========================================================= */
+
+          document
+              .querySelectorAll('.fancybox-vd')
+              .forEach(function (trigger) {
+
+                  trigger.addEventListener('click', function (event) {
+
+                      event.preventDefault();
+                      event.stopPropagation();
+
+                      const videoUrl =
+                          trigger.getAttribute('data-video');
+
+                      if (!videoUrl) {
+                          return;
+                      }
+
+                      openVideoLightbox(videoUrl);
+                  });
+              });
+
+
+          /* =========================================================
+             CLOSE BUTTON
+             ========================================================= */
+
+          if (videoLightboxClose) {
+
+              videoLightboxClose.addEventListener(
+                  'click',
+                  function (event) {
+
+                      event.preventDefault();
+                      event.stopPropagation();
+
+                      closeVideoLightbox();
+
+                  }
+              );
+
+          }
+
+
+          /* =========================================================
+             CLICK OUTSIDE VIDEO
+             ========================================================= */
+
+          if (videoLightbox) {
+              videoLightbox.addEventListener(
+                  'click',
+                  function (event) {
+
+                      if (event.target === videoLightbox) {
+                          closeVideoLightbox();
+
+                      }
+                  }
+              );
+          }
+
+          /* =========================================================
+             ESC KEY
+             ========================================================= */
+          document.addEventListener(
+              'keydown',
+              function (event) {
+
+                  if (
+                      event.key === 'Escape' &&
+                      videoLightbox &&
+                      videoLightbox.classList.contains('active')
+                  ) {
+
+                      closeVideoLightbox();
+
+                  }
+              }
+          );
+
+          // ------------------------------------------------------------
+          // Video zoom-in on scroll — hero video only.
+          // By default the video is hidden (scaled down + transparent).
+          // As you scroll down from the top of the page, it slowly
+          // zooms in and fades up to full size/opacity. Scroll back up
+          // and it shrinks/fades back out — fully reversible, no snap.
+          // ------------------------------------------------------------
+           (function () {
+              const heroZoomWrap = document.getElementById('heroZoomWrap');
+              const heroImage = document.querySelector('.hero-image');
+
+              if (!heroZoomWrap || !heroImage) return;
+
+              const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+              if (prefersReducedMotion) {
+                heroZoomWrap.style.transform = 'scale(1)';
+                heroZoomWrap.style.opacity = '1';
+                return;
+              }
+
+              const START_SCALE = 0.4;
+              const END_SCALE = 1;
+              let ticking = false;
+
+              function updateHeroZoom() {
+                const rect = heroImage.getBoundingClientRect();
+                const viewportHeight = window.innerHeight;
+                
+                // Calculates position relative to screen center
+                const elementCenter = rect.top + rect.height / 2;
+                const viewportCenter = viewportHeight / 2;
+                
+                // Smooth transition completing right at center screen
+                const distance = viewportHeight * 0.8;
+                const progress = Math.min(Math.max(1 - (elementCenter - viewportCenter) / distance, 0), 1);
+
+                const scale = START_SCALE + progress * (END_SCALE - START_SCALE);
+
+                heroZoomWrap.style.transform = 'scale(' + scale.toFixed(3) + ')';
+                heroZoomWrap.style.opacity = progress.toFixed(3);
+
+                ticking = false;
+              }
+
+              function onScroll() {
+                if (!ticking) {
+                  window.requestAnimationFrame(updateHeroZoom);
+                  ticking = true;
+                }
+              }
+
+              window.addEventListener('scroll', onScroll, { passive: true });
+              window.addEventListener('resize', onScroll);
+              updateHeroZoom();
+            })(); 
+    </script>
+</body>
+
+</html>
